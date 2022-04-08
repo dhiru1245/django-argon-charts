@@ -30,8 +30,9 @@ class Order(models.Model):
     @classmethod
     def best_month(cls):
         res = {}
-        month_price = cls.objects.values_list('created_time__month').annotate(total=Sum('price'))
-        if month_price:
+        if month_price := cls.objects.values_list('created_time__month').annotate(
+            total=Sum('price')
+        ):
             res['month'], res['price'] = max(month_price, key=lambda i: i[1])
             res['month_name'] = date(datetime.date(datetime.datetime.now().year, month=res['month'], day=1), 'F')
         return res
@@ -43,9 +44,7 @@ class Order(models.Model):
         month_val = now.month + 1
 
         # Limit the upper value
-        if month_val > 12:
-            month_val = 12
-        
+        month_val = min(month_val, 12)
         filter_params = {
             'created_time__date__gte': '{year}-{month}-{day}'.format(year=now.year - 1, month=month_val,
                                                                      day=now.day),

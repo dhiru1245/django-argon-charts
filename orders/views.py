@@ -52,5 +52,4 @@ class OrderView(View):
         return render_to_string('orders/modal_form.html', {'form': form})
 
     def get_object(self, pk):
-        order = Order.objects.get(id=pk)
-        return order
+        return Order.objects.get(id=pk)
